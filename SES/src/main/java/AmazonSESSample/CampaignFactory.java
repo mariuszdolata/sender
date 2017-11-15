@@ -111,16 +111,25 @@ public class CampaignFactory implements Runnable {
 		this.campaign = campaign;
 	}
 	
-	public CampaignFactory(String campaigName, String smtpFilePath, String contentCode, String senderName, String senderEmail) {
-		this.senderName=senderName;
-		this.senderEmail=senderEmail;
-		this.campaignName = campaigName;
-		this.sMTPConfig=new SMTPConfig(smtpFilePath);
-		this.contentCode=contentCode;
+//	public CampaignFactory(String campaigName, String smtpFilePath, String contentCode, String senderName, String senderEmail) {
+//		this.senderName=senderName;
+//		this.senderEmail=senderEmail;
+//		this.campaignName = campaigName;
+//		this.sMTPConfig=new SMTPConfig(smtpFilePath);
+//		this.contentCode=contentCode;
+//		this.recipientsRepository = new RecipientsRepository("C:\\crawlers\\amazon\\"+this.getCampaignName()+"_test_aa.csv");
+//		this.campaignContent = new CampaignContent("C:\\crawlers\\amazon\\"+this.getCampaignName(), this.getSenderName(), this.getSenderEmail());
+//		
+//		
+//	}
+	public CampaignFactory(CampaignSettings campaignSettings) {
+		this.senderName = campaignSettings.getSenderName();
+		this.senderEmail = campaignSettings.getSenderEmail();
+		this.campaignName = campaignSettings.getCampaignName();
+		this.sMTPConfig = new SMTPConfig("C:\\crawlers\\amazon\\smtpconfig\\"+campaignSettings.getSmtpFilePath()+".properties");
+		this.contentCode = campaignSettings.getContentCode();
 		this.recipientsRepository = new RecipientsRepository("C:\\crawlers\\amazon\\"+this.getCampaignName()+"_test_aa.csv");
-		this.campaignContent = new CampaignContent("C:\\crawlers\\amazon\\"+this.getCampaignName(), this.getSenderName(), this.getSenderEmail());
-		
-		
+		this.campaignContent = new CampaignContent("C:\\crawlers\\amazon\\zaczepki\\"+this.getCampaignName()+"\\"+campaignSettings.getContentCode()+"\\"+this.getCampaignName(), this.getSenderName(), this.getSenderEmail());
 	}
 
 	/**

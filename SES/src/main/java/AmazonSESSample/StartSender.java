@@ -1,6 +1,6 @@
 package AmazonSESSample;
 
-public class AmazonSESSample {
+public class StartSender {
 
 
 

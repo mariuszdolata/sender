@@ -6,6 +6,15 @@ public class CampaignSettings {
 	public String contentCode;
 	public String senderName;
 	public String senderEmail;
+	public int numberOfThreads;
+	
+	
+	public int getNumberOfThreads() {
+		return numberOfThreads;
+	}
+	public void setNumberOfThreads(int numberOfThreads) {
+		this.numberOfThreads = numberOfThreads;
+	}
 	public String getCampaignName() {
 		return campaignName;
 	}
@@ -37,13 +46,15 @@ public class CampaignSettings {
 		this.senderEmail = senderEmail;
 	}
 	public CampaignSettings(String campaignName, String smtpFilePath, String contentCode, String senderName,
-			String senderEmail) {
+			String senderEmail, String numberOfThreads) {
 		super();
 		this.campaignName = campaignName;
 		this.smtpFilePath = smtpFilePath;
 		this.contentCode = contentCode;
 		this.senderName = senderName;
 		this.senderEmail = senderEmail;
+		this.numberOfThreads = Integer.parseInt(numberOfThreads);
+		
 	}
 	@Override
 	public int hashCode() {
