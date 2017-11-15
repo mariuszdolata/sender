@@ -1,0 +1,101 @@
+package AmazonSESSample;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.HashSet;
+import java.util.Set;
+
+import Structure.Sellter;
+import Structure.SendClass;
+
+/**
+ * Klasa wczytujaca wygenerowane dane dla kampanii
+ * @author mariusz
+ *
+ */
+public class RecipientsRepository {
+	public Set<Sellter> recipients;
+	public String filePath;
+	
+		
+	
+	public Set<Sellter> getRecipients() {
+		return recipients;
+	}
+	public void setRecipients(Set<Sellter> recipients) {
+		this.recipients = recipients;
+	}
+	public String getFilePath() {
+		return filePath;
+	}
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
+	}
+	
+	
+	
+	public RecipientsRepository(String filePath) {
+		super();
+		this.filePath = filePath;
+		this.recipients=loadEmailsFromFile(filePath);
+		showRecipients();
+	}
+	public static Set<Sellter> loadEmailsFromFile(String filePath){
+		
+		Set<Sellter> recipients = new HashSet<Sellter>();
+		try {
+
+            File f = new File(filePath);
+
+            BufferedReader b = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8"));
+
+            String readLine = "";
+
+            System.out.println("Start loading recipients.");
+
+            while ((readLine = b.readLine()) != null) {
+                System.out.println("new recipients:  "+readLine);
+                Sellter nextSellter = mapperSellter(readLine);
+                if(nextSellter!= null) {
+                	recipients.add(nextSellter);
+                	System.out.println("Recipient added: "+nextSellter.toString());
+                }else {
+                	System.out.println("Recipient was skipped" + readLine);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+		
+		return recipients;
+	}
+	public static Sellter mapperSellter(String line) {
+		Sellter sellter = null;
+		String[] fields = line.split(";");
+		try {
+			sellter = new Sellter(fields[0], false, fields[3], fields[2], fields[1], fields[4]);
+		}catch(Exception e) {
+			System.err.println("Sellter mapping error - out of bound? domain missing?");
+			e.printStackTrace();
+			try {
+				sellter = new Sellter(fields[0], false, fields[3], fields[2], fields[1], "");
+			}catch(Exception ee) {
+				System.err.println("Sellter mapping error lvl2 - this recipient was skipped");
+				ee.printStackTrace();
+			}
+				
+		}
+		return sellter;
+	}
+	public void showRecipients() {
+		System.out.println("Loaded recipients:");
+		for(Sellter s:this.recipients) {
+			System.out.println(s.toString());
+		}
+	}
+
+}
