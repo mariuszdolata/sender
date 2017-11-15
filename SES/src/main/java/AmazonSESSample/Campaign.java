@@ -9,12 +9,15 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import Structure.Sellter;
+import org.apache.log4j.Logger;
+
+import Structure.Recipient;
 
 public class Campaign {
 	public CampaignContent campaignContent;
 	public RecipientsRepository recipientsRepository;
 	public SMTPConfig sMTPConfig;
+	public Logger mailingLog = Logger.getLogger("mailing");
 
 	public CampaignContent getCampaignContent() {
 		return campaignContent;
@@ -59,9 +62,9 @@ public class Campaign {
 		for (Entry<Object, Object> e : props.entrySet()) {
 			System.out.println(e);
 		}
-		int i=1;
+		int i = 1;
 		try {
-			for (Sellter recipient : this.getRecipientsRepository().getRecipients()) {
+			for (Recipient recipient : this.getRecipientsRepository().getRecipients()) {
 				i++;
 				createEmail(recipient, i);
 			}
@@ -75,13 +78,13 @@ public class Campaign {
 
 		//////////////////
 
-		for (Sellter recipient : this.getRecipientsRepository().getRecipients()) {
+		for (Recipient recipient : this.getRecipientsRepository().getRecipients()) {
 
 		}
 		////////////////////////////////////
 	}
 
-	public void createEmail(Sellter recipient, int i) {
+	public void createEmail(Recipient recipient, int i) {
 		String content;
 		if (recipient.getPlec().contains("K")) {
 			content = this.getCampaignContent().getContentFemale();
@@ -93,44 +96,33 @@ public class Campaign {
 			content = this.campaignContent.getContentUnknown();
 			// System.out.println("Bez okreœlenia p³ci");
 		}
-		// content.replaceAll("null", "");
-		content = content.replaceAll("-XXX_IMIE_ODMIANA_XXX-", recipient.getImieOdmiana());
-		content = content.replace("null", "");
+		// personalizacja tresci
+		content = personalizeText(content, recipient);
 		System.out.println("=>" + content);
 		// MimeMessage msg = new MimeMessage(session);
 		MimeMessage msg = null;
-		try {/*
-				 * msg = new MimeMessage(session); msg.setFrom(new
-				 * InternetAddress(this.getCampaignContent().getSenderEmail(),
-				 * this.getCampaignContent().getSenderName())); msg.setHeader("Content-Type",
-				 * "text/plain; charset=UTF-8"); msg.setRecipient(Message.RecipientType.TO, new
-				 * InternetAddress(recipient.getEmail())); String subject =
-				 * "Nowi klienci dla "+recipient.getNazwa(); msg.setSubject(subject, "utf-8");
-				 * String body = String.join(System.getProperty("line.separator"),content);
-				 * msg.setContent(body, "text/html; charset=UTF-8");
-				 * System.out.println("msg podczas tworzenia= "+msg.toString());
-				 */
+		try {
 
 			///// STARA WERSJA
 			Properties props = this.getsMTPConfig().getProps();
 			// Properties props = System.getProperties();
-			String FROM = this.campaignContent.getSenderEmail();
-			String FROMNAME = this.campaignContent.getSenderName();
+			String senderEmail = this.campaignContent.getSenderEmail();
+			String senderName = this.campaignContent.getSenderName();
 			System.out.println("wysylka na email=" + recipient.getEmail());
-			String TO = recipient.getEmail();
-			String SMTP_USERNAME = this.getsMTPConfig().getSMTP_USERNAME();
-			String SMTP_PASSWORD = this.getsMTPConfig().getSMTP_PASSWORD();
-			String CONFIGSET = "ConfigSet";
-			String HOST = this.getsMTPConfig().getHOST();
-			String BODY = String.join(System.getProperty("line.separator"), content);
+			String recipientEmail = recipient.getEmail();
+			String smtpUserName = this.getsMTPConfig().getSMTP_USERNAME();
+			String smtpPassword = this.getsMTPConfig().getSMTP_PASSWORD();
+			String configSet = "ConfigSet";
+			String host = this.getsMTPConfig().getHOST();
+			String body = String.join(System.getProperty("line.separator"), content);
 			Session session = Session.getDefaultInstance(props);
 			msg = new MimeMessage(session);
-			msg.setFrom(new InternetAddress(FROM, FROMNAME));
+			msg.setFrom(new InternetAddress(senderEmail, senderName));
 			msg.setHeader("Content-Type", "text/plain; charset=UTF-8");
-			msg.setRecipient(Message.RecipientType.TO, new InternetAddress(TO));
-			String SUBJECT = "Nowi klienci dla "+recipient.getNazwa();
-			msg.setSubject(SUBJECT, "utf-8");
-			msg.setContent(BODY, "text/html; charset=UTF-8");
+			msg.setRecipient(Message.RecipientType.TO, new InternetAddress(recipientEmail));
+			String subject = personalizeText(this.getCampaignContent().getSubject(), recipient);
+			msg.setSubject(subject, "utf-8");
+			msg.setContent(body, "text/html; charset=UTF-8");
 			// Create a transport.
 			Transport transport = session.getTransport();
 
@@ -141,11 +133,12 @@ public class Campaign {
 
 				// Connect to Amazon SES using the SMTP username and password you specified
 				// above.
-				transport.connect(HOST, SMTP_USERNAME, SMTP_PASSWORD);
+				transport.connect(host, smtpUserName, smtpPassword);
 
 				// Send the email.
 				transport.sendMessage(msg, msg.getAllRecipients());
-				System.out.println("Email sent!, i="+i+", email="+recipient.getEmail());
+				System.out.println("Email sent!, i=" + i + ", email=" + recipient.getEmail());
+				mailingLog.info("Email sent!, i=" + i + ", email=" + recipient.getEmail());
 
 			} catch (Exception ex) {
 				System.out.println("The email was not sent,");
@@ -159,6 +152,26 @@ public class Campaign {
 			System.err.println("Nie uda³o siê stworzyæ wiadomoœci");
 			e.printStackTrace();
 		}
+	}
+
+	public String personalizeText(String text, Recipient recipient) {
+		String personalized = text;
+
+		personalized = personalized.replaceAll("-XXX_WEBSITE_XXX-", recipient.getWebsite());
+		personalized = personalized.replaceAll("-XXX_FORMA_PRAWNA_XXX-", recipient.getFormaPrawna());
+		personalized = personalized.replaceAll("-XXX_NAZWA_FIRMY_XXX-", recipient.getNazwa());
+		personalized = personalized.replaceAll("-XXX_OBROT_XXX-", recipient.getObrot());
+		personalized = personalized.replaceAll("-XXX_ZYSK_XXX-", recipient.getZysk());
+		personalized = personalized.replaceAll("-XXX_ZATRUDNIENIE_XXX-", recipient.getZatrudnienie());
+		personalized = personalized.replaceAll("-XXX_POZIOM_OBROT_XXX-", recipient.getPoziomObrot());
+		personalized = personalized.replaceAll("-XXX_POZIOM_ZYSK_XXX-", recipient.getPoziomZysk());
+		personalized = personalized.replaceAll("-XXX_POZIOM_ZATRUDNIENIE_XXX-", recipient.getPoziomZatrudnienie());
+		personalized = personalized.replaceAll("-XXX_IMIE_ODMIANA_XXX-", recipient.getImieOdmiana());
+		personalized = personalized.replaceAll("-XXX_PLEC_XXX-", recipient.getPlec());
+		personalized = personalized.replaceAll("-XXX_STANOWISKO_XXX-", recipient.getStanowisko());
+		personalized = personalized.replaceAll("NULL", "");
+		personalized = personalized.replaceAll("null", "");
+		return personalized;
 	}
 
 }

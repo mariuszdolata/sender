@@ -128,8 +128,8 @@ public class CampaignFactory implements Runnable {
 		this.campaignName = campaignSettings.getCampaignName();
 		this.sMTPConfig = new SMTPConfig("C:\\crawlers\\amazon\\smtpconfig\\"+campaignSettings.getSmtpFilePath()+".properties");
 		this.contentCode = campaignSettings.getContentCode();
-		this.recipientsRepository = new RecipientsRepository("C:\\crawlers\\amazon\\"+this.getCampaignName()+"_test_aa.csv");
-		this.campaignContent = new CampaignContent("C:\\crawlers\\amazon\\zaczepki\\"+this.getCampaignName()+"\\"+campaignSettings.getContentCode()+"\\"+this.getCampaignName(), this.getSenderName(), this.getSenderEmail());
+		this.recipientsRepository = new RecipientsRepository("C:\\crawlers\\amazon\\odbiorcy\\"+this.getCampaignName()+"_test_aa.csv");
+		this.campaignContent = new CampaignContent("C:\\crawlers\\amazon\\zaczepki\\"+this.getCampaignName()+"\\"+campaignSettings.getContentCode()+"\\"+this.getCampaignName(), this.getSenderName(), this.getSenderEmail(), campaignSettings.getSubject());
 	}
 
 	/**

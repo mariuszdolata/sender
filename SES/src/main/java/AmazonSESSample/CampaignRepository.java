@@ -77,11 +77,11 @@ public class CampaignRepository {
 				System.out.println(readLine);
 				String[] parts = readLine.split(";");
 				System.out.println("liczba emementow to "+parts.length);
-				if (parts.length == 7) {
+				if (parts.length == 8) {
 					// wykrywa kampanie aktywne
 					if (parts[5].contains("yes")) {
 						this.getCampaignsSet()
-								.add(new CampaignSettings(parts[0], parts[1], parts[2], parts[3], parts[4], parts[6]));
+								.add(new CampaignSettings(parts[0], parts[1], parts[2], parts[3], parts[4], parts[6], parts[7]));
 						System.out.println("new campign:  " + readLine);
 					} else if (parts[5].contains("no")) {
 						System.out.println("Skipped campaign: " + parts[1]);

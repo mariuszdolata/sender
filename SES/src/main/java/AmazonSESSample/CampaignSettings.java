@@ -6,9 +6,16 @@ public class CampaignSettings {
 	public String contentCode;
 	public String senderName;
 	public String senderEmail;
+	public String subject;
 	public int numberOfThreads;
 	
 	
+	public String getSubject() {
+		return subject;
+	}
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
 	public int getNumberOfThreads() {
 		return numberOfThreads;
 	}
@@ -46,7 +53,7 @@ public class CampaignSettings {
 		this.senderEmail = senderEmail;
 	}
 	public CampaignSettings(String campaignName, String smtpFilePath, String contentCode, String senderName,
-			String senderEmail, String numberOfThreads) {
+			String senderEmail, String numberOfThreads, String subject) {
 		super();
 		this.campaignName = campaignName;
 		this.smtpFilePath = smtpFilePath;
@@ -54,6 +61,7 @@ public class CampaignSettings {
 		this.senderName = senderName;
 		this.senderEmail = senderEmail;
 		this.numberOfThreads = Integer.parseInt(numberOfThreads);
+		this.subject = subject;
 		
 	}
 	@Override
@@ -65,6 +73,7 @@ public class CampaignSettings {
 		result = prime * result + ((senderEmail == null) ? 0 : senderEmail.hashCode());
 		result = prime * result + ((senderName == null) ? 0 : senderName.hashCode());
 		result = prime * result + ((smtpFilePath == null) ? 0 : smtpFilePath.hashCode());
+		result = prime * result + ((subject == null) ? 0 : subject.hashCode());
 		return result;
 	}
 	@Override
@@ -101,8 +110,14 @@ public class CampaignSettings {
 				return false;
 		} else if (!smtpFilePath.equals(other.smtpFilePath))
 			return false;
+		if (subject == null) {
+			if (other.subject != null)
+				return false;
+		} else if (!subject.equals(other.subject))
+			return false;
 		return true;
 	}
+	
 	
 	
 
