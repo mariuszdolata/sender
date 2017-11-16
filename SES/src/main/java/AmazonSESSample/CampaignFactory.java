@@ -137,7 +137,7 @@ public class CampaignFactory implements Runnable {
 	 */
 	public void run() {
 		// TODO Auto-generated method stub
-		this.campaign = new Campaign(this.getCampaignContent(), this.getRecipientsRepository(), this.getsMTPConfig());
+		this.campaign = new Campaign(this.getCampaignContent(), this.getRecipientsRepository(), this.getsMTPConfig(), this.getCampaignName());
 	}
 
 }

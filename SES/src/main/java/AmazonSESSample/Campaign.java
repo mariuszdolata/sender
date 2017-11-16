@@ -18,6 +18,7 @@ public class Campaign {
 	public RecipientsRepository recipientsRepository;
 	public SMTPConfig sMTPConfig;
 	public Logger mailingLog = Logger.getLogger("mailing");
+	public String campaignName;
 
 	public CampaignContent getCampaignContent() {
 		return campaignContent;
@@ -43,7 +44,8 @@ public class Campaign {
 		this.sMTPConfig = sMTPConfig;
 	}
 
-	public Campaign(CampaignContent campaignContent, RecipientsRepository recipientsRepository, SMTPConfig sMTPConfig) {
+	public Campaign(CampaignContent campaignContent, RecipientsRepository recipientsRepository, SMTPConfig sMTPConfig, String campaignName) {
+		this.campaignName=campaignName;
 		this.campaignContent = campaignContent;
 		this.recipientsRepository = recipientsRepository;
 		this.sMTPConfig = sMTPConfig;
@@ -138,7 +140,7 @@ public class Campaign {
 				// Send the email.
 				transport.sendMessage(msg, msg.getAllRecipients());
 				System.out.println("Email sent!, i=" + i + ", email=" + recipient.getEmail());
-				mailingLog.info("Email sent!, i=" + i + ", email=" + recipient.getEmail());
+				mailingLog.info("Email sent!, campaign= "+this.campaignContent.getSenderEmail()+"i=" + i + ", email=" + recipient.getEmail());
 
 			} catch (Exception ex) {
 				System.out.println("The email was not sent,");
