@@ -1,4 +1,4 @@
-package AmazonSESSample;
+package CampaignSender;
 
 import java.util.Map.Entry;
 import java.util.Properties;

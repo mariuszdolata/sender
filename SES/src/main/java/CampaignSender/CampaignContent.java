@@ -1,4 +1,4 @@
-package AmazonSESSample;
+package CampaignSender;
 
 import java.io.BufferedReader;
 import java.io.File;

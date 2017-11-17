@@ -1,4 +1,4 @@
-package AmazonSESSample;
+package CampaignSender;
 
 import java.io.FileInputStream;
 import java.io.IOException;

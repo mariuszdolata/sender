@@ -1,4 +1,4 @@
-package AmazonSESSample;
+package CampaignSender;
 
 public class CampaignFactory implements Runnable {
 	/**
