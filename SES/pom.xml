@@ -21,6 +21,16 @@
 	<build>
 		<plugins>
 			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+					<fork>true</fork>
+					<executable>C:\Program Files\Java\jdk1.8.0_144\bin\javac</executable>
+				</configuration>
+			</plugin>
+			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
 					<descriptorRefs>
@@ -28,7 +38,7 @@
 					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>updater.run.StartTest</mainClass>
+							<mainClass>CampaignSender.StartSender</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

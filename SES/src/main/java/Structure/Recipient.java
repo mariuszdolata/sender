@@ -128,7 +128,19 @@ public class Recipient extends SendClass {
 		this.pkdSkrot = pkdSkrot;
 	}
 
-	
+	public Recipient(String email, boolean status) {
+		super(email, status);
+		this.plec="";
+	}
+	public Recipient(String email, boolean status, String plec) {
+		super(email, status);
+		this.plec=plec;
+	}
+	public Recipient(String email, boolean status, String plec, String imieOdmiana) {
+		super(email,status);
+		this.plec=plec;
+		this.imieOdmiana=imieOdmiana;
+	}
 	public Recipient(String email, boolean status, String website, String formaPrawna, String nazwa, String obrot,
 			String zysk, String zatrudnienie, String poziomObrot, String poziomZysk, String poziomZatrudnienie,
 			String imieOdmiana, String plec, String stanowisko, String pkd, String pkdSkrot) {

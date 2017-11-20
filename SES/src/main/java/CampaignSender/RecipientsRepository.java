@@ -74,7 +74,11 @@ public class RecipientsRepository {
 
 		return recipients;
 	}
-
+/**
+ * UWAGA, koniecznosc ujednolicenia mapowania !!!! Obecna forma jest tylko przejsciowa!
+ * @param line
+ * @return
+ */
 	public static Recipient mapperSellter(String line) {
 		Recipient sellter = null;
 		String[] fields = line.split(";");
@@ -93,7 +97,14 @@ public class RecipientsRepository {
 				sellter = new Recipient(fields[0], false, fields[1], fields[2], fields[3], fields[4], fields[5],
 						fields[6], fields[7], fields[8], fields[9], fields[10], fields[11], fields[12]);
 				System.out.println(">>>>13>>>>>>>>>>"+sellter.toString());
+			} else if (fields.length ==1) {
+				sellter = new Recipient(fields[0], false);
+			}else if (fields.length ==2) {
+				sellter = new Recipient(fields[0], false, fields[1]);
+			}else if (fields.length ==3) {
+				sellter = new Recipient(fields[0], false, fields[1], fields[2]);
 			}
+			
 			
 		} catch (Exception e) {
 			System.err.println("Sellter mapping error - out of bound? domain missing?");

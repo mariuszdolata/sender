@@ -7,6 +7,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import org.apache.log4j.Logger;
+
 public class CampaignContent {
 
 	public String contentMale, contentFemale, contentUnknown; // tresc zaczepki w zaleznosci od plci
@@ -14,6 +16,8 @@ public class CampaignContent {
 	public String senderEmail;
 	public String contentFilePath;
 	public String subject;
+	public Logger mailErr = Logger.getLogger("mailErr");
+	public Logger mainLog = Logger.getLogger("mainLog");
 
 	public CampaignContent(String contentFilePath, String senderName, String senderEmail, String subject) {
 		super();
@@ -24,7 +28,7 @@ public class CampaignContent {
 		this.contentFemale = loadContent(contentFilePath + "_f.txt");
 		this.contentUnknown = loadContent(contentFilePath + "_u.txt");
 		this.subject = subject;
-		this.showContent();
+		//this.showContent();
 	}
 
 	public String getSubject() {
@@ -92,13 +96,13 @@ public class CampaignContent {
 			// BufferedReader b = new BufferedReader(new FileReader(f));
 			BufferedReader b = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8"));
 			String readLine;
-			System.out.println("Start loadingcontent.");
+			mainLog.info("Pocz¹tek wczytywania zaczepki dla kampanii " + filePath);
 			while ((readLine = b.readLine()) != null) {
 				content += readLine;
 			}
-			System.out.print("Zakoñczono wczytywanie zaczepki z pliku " + filePath);
+			mainLog.info("Koniec wczytywania zaczepki dla kampanii " + filePath);
 		} catch (IOException e) {
-			System.err.println("Unable to load content from file: " + filePath);
+			mailErr.error("Blad wczytania zaczepki dla kampanii " + filePath, e);
 			e.printStackTrace();
 		}
 
