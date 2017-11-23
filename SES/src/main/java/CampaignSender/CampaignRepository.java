@@ -10,7 +10,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
-
+/**
+ * Klasa odpowiedzialna za wczytanie listy kampanii  pliku oraz stworzenie osobnego w¹tku dla ka¿dej z kampanii.
+ */
 public class CampaignRepository {
 	public int numberOfCampaign;
 	/**
@@ -98,7 +100,9 @@ public class CampaignRepository {
 			e.printStackTrace();
 		}
 	}
-
+/**
+ * Metoda tworz¹ca osobne w¹tki dla ka¿dej z kampanii
+ */
 	public void createCampaignFactory(List<?> campaignList) {
 
 		CampaignFactory[] campaignFactory = new CampaignFactory[campaignList.size()];
