@@ -1,5 +1,11 @@
 package CampaignSender;
 
+
+/**
+ * Metoda fabrykuj¹ca dla ka¿dej z kampanii. 
+ * @author mariusz
+ *
+ */
 public class CampaignFactory implements Runnable {
 	/**
 	 * Nazwa kampanii wykorzystywana w recipientRepository
@@ -19,7 +25,7 @@ public class CampaignFactory implements Runnable {
 	 */
 	public SMTPConfig sMTPConfig = null;
 	/**
-	 * Obiekt przechowujacy odbiorcow emaili
+	 * Obiekt przechowujacy odbiorcow emaili. KONIECZNOSC zapewnienia synchronizacji !
 	 */
 	public RecipientsRepository recipientsRepository = null;
 
@@ -32,13 +38,12 @@ public class CampaignFactory implements Runnable {
 	 * wykorzystaniem wskazanego serwera
 	 */
 	public Campaign campaign = null;
-	
+
 	/**
 	 * Nadawca
 	 */
 	public String senderName, senderEmail;
 
-	
 	public String getSenderName() {
 		return senderName;
 	}
@@ -110,26 +115,35 @@ public class CampaignFactory implements Runnable {
 	public void setCampaign(Campaign campaign) {
 		this.campaign = campaign;
 	}
-	
-//	public CampaignFactory(String campaigName, String smtpFilePath, String contentCode, String senderName, String senderEmail) {
-//		this.senderName=senderName;
-//		this.senderEmail=senderEmail;
-//		this.campaignName = campaigName;
-//		this.sMTPConfig=new SMTPConfig(smtpFilePath);
-//		this.contentCode=contentCode;
-//		this.recipientsRepository = new RecipientsRepository("C:\\crawlers\\amazon\\"+this.getCampaignName()+"_test_aa.csv");
-//		this.campaignContent = new CampaignContent("C:\\crawlers\\amazon\\"+this.getCampaignName(), this.getSenderName(), this.getSenderEmail());
-//		
-//		
-//	}
+
+	// public CampaignFactory(String campaigName, String smtpFilePath, String
+	// contentCode, String senderName, String senderEmail) {
+	// this.senderName=senderName;
+	// this.senderEmail=senderEmail;
+	// this.campaignName = campaigName;
+	// this.sMTPConfig=new SMTPConfig(smtpFilePath);
+	// this.contentCode=contentCode;
+	// this.recipientsRepository = new
+	// RecipientsRepository("C:\\crawlers\\amazon\\"+this.getCampaignName()+"_test_aa.csv");
+	// this.campaignContent = new
+	// CampaignContent("C:\\crawlers\\amazon\\"+this.getCampaignName(),
+	// this.getSenderName(), this.getSenderEmail());
+	//
+	//
+	// }
 	public CampaignFactory(CampaignSettings campaignSettings) {
 		this.senderName = campaignSettings.getSenderName();
 		this.senderEmail = campaignSettings.getSenderEmail();
 		this.campaignName = campaignSettings.getCampaignName();
-		this.sMTPConfig = new SMTPConfig("C:\\crawlers\\amazon\\smtpconfig\\"+campaignSettings.getSmtpFilePath()+".properties");
+		this.sMTPConfig = new SMTPConfig(
+				"C:\\crawlers\\amazon\\smtpconfig\\" + campaignSettings.getSmtpFilePath() + ".properties");
 		this.contentCode = campaignSettings.getContentCode();
-		this.recipientsRepository = new RecipientsRepository("C:\\crawlers\\amazon\\odbiorcy\\"+this.getCampaignName()+"_test_aa.csv");
-		this.campaignContent = new CampaignContent("C:\\crawlers\\amazon\\zaczepki\\"+this.getCampaignName()+"\\"+campaignSettings.getContentCode()+"\\"+this.getCampaignName(), this.getSenderName(), this.getSenderEmail(), campaignSettings.getSubject());
+		this.recipientsRepository = new RecipientsRepository(
+				"C:\\crawlers\\amazon\\odbiorcy\\" + this.getCampaignName() + "_test_aa.csv");
+		this.campaignContent = new CampaignContent(
+				"C:\\crawlers\\amazon\\zaczepki\\" + this.getCampaignName() + "\\" + campaignSettings.getContentCode()
+						+ "\\" + this.getCampaignName(),
+				this.getSenderName(), this.getSenderEmail(), campaignSettings.getSubject());
 	}
 
 	/**
@@ -137,7 +151,8 @@ public class CampaignFactory implements Runnable {
 	 */
 	public void run() {
 		// TODO Auto-generated method stub
-		this.campaign = new Campaign(this.getCampaignContent(), this.getRecipientsRepository(), this.getsMTPConfig(), this.getCampaignName());
+		this.campaign = new Campaign(this.getCampaignContent(), this.getRecipientsRepository(), this.getsMTPConfig(),
+				this.getCampaignName());
 	}
 
 }
