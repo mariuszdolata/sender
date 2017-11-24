@@ -10,8 +10,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+
+import org.apache.log4j.Logger;
+
 /**
- * Klasa odpowiedzialna za wczytanie listy kampanii  pliku oraz stworzenie osobnego w¹tku dla ka¿dej z kampanii.
+ * Klasa odpowiedzialna za wczytanie listy kampanii pliku oraz stworzenie
+ * osobnego w¹tku dla ka¿dej z kampanii.
  */
 public class CampaignRepository {
 	public int numberOfCampaign;
@@ -19,7 +23,8 @@ public class CampaignRepository {
 	 * zbior ustawien kampanii wczytanych z pliku campaignSettings.txt
 	 */
 	public Set<CampaignSettings> campaignsSet = new HashSet<CampaignSettings>();
-	public List<?> campaignList; 
+	public List<?> campaignList;
+	public Logger testLog = Logger.getLogger("testLog");
 
 	public int getNumberOfCampaign() {
 		return numberOfCampaign;
@@ -36,7 +41,6 @@ public class CampaignRepository {
 	public void setCampaignsSet(Set<CampaignSettings> campaignsSet) {
 		this.campaignsSet = campaignsSet;
 	}
-	
 
 	public List<?> getCampaignList() {
 		return campaignList;
@@ -48,13 +52,13 @@ public class CampaignRepository {
 
 	public CampaignRepository() {
 		loadCampaignSettings("campaignSettings");
-		//konwersja do listy na potrzeby tworzenia nowych watkow
+		// konwersja do listy na potrzeby tworzenia nowych watkow
 		this.campaignList = campaignsSet.stream().collect(Collectors.toList());
 		// liczba watkow do wygenerowania
 		this.numberOfCampaign = this.getCampaignsSet().size();
-		if(campaignList.size()>0) {
+		if (campaignList.size() > 0) {
 			createCampaignFactory(campaignList);
-		}else {
+		} else {
 			System.err.println("Campaign list is empty.");
 		}
 	}
@@ -78,17 +82,17 @@ public class CampaignRepository {
 			while ((readLine = b.readLine()) != null) {
 				System.out.println(readLine);
 				String[] parts = readLine.split(";");
-				System.out.println("liczba emementow to "+parts.length);
+				System.out.println("liczba emementow to " + parts.length);
 				if (parts.length == 8) {
 					// wykrywa kampanie aktywne
 					if (parts[5].contains("yes")) {
-						this.getCampaignsSet()
-								.add(new CampaignSettings(parts[0], parts[1], parts[2], parts[3], parts[4], parts[6], parts[7]));
+						this.getCampaignsSet().add(new CampaignSettings(parts[0], parts[1], parts[2], parts[3],
+								parts[4], parts[6], parts[7]));
 						System.out.println("new campign:  " + readLine);
 					} else if (parts[5].contains("no")) {
 						System.out.println("Skipped campaign: " + parts[1]);
-					}else {
-						System.out.println("niesklasyfikowano = "+parts[5]);
+					} else {
+						System.out.println("niesklasyfikowano = " + parts[5]);
 					}
 				} else {
 					System.err.println("Unable load settings for campaign - check syntax");
@@ -100,15 +104,16 @@ public class CampaignRepository {
 			e.printStackTrace();
 		}
 	}
-/**
- * Metoda tworz¹ca osobne w¹tki dla ka¿dej z kampanii
- */
-	public void createCampaignFactory(List<?> campaignList) {
 
+	/**
+	 * Metoda tworz¹ca osobne w¹tki dla ka¿dej z kampanii
+	 */
+	public void createCampaignFactory(List<?> campaignList) {
+		testLog.info("ZNALEZIONO "+campaignList.size()+" KAMPANII");
 		CampaignFactory[] campaignFactory = new CampaignFactory[campaignList.size()];
 		Thread[] threads = new Thread[campaignList.size()];
 		for (int i = 0; i < campaignList.size(); i++) {
-			campaignFactory[i] = new CampaignFactory((CampaignSettings)campaignList.get(i));
+			campaignFactory[i] = new CampaignFactory((CampaignSettings) campaignList.get(i));
 		}
 		for (int i = 0; i < campaignList.size(); i++) {
 			threads[i] = new Thread(campaignFactory[i]);

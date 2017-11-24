@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 
 import Structure.Recipient;
 
-public class Campaign {
+public class Campaign implements Runnable {
 	public CampaignContent campaignContent;
 	public RecipientsRepository recipientsRepository;
 	public SMTPConfig sMTPConfig;
@@ -21,7 +21,7 @@ public class Campaign {
 	public Logger mailErr = Logger.getLogger("mailErr");
 	public Logger mainLog = Logger.getLogger("mainLog");
 	public String campaignName;
-	
+	public int thread;
 
 	public String getCampaignName() {
 		return campaignName;
@@ -55,15 +55,18 @@ public class Campaign {
 		this.sMTPConfig = sMTPConfig;
 	}
 
-	public Campaign(CampaignContent campaignContent, RecipientsRepository recipientsRepository, SMTPConfig sMTPConfig, String campaignName) {
-		mainLog.info("Uruchomienie konstruktora Campaign dla kampanii="+campaignName);
-		this.campaignName=campaignName;
+	public Campaign(CampaignContent campaignContent, RecipientsRepository recipientsRepository, SMTPConfig sMTPConfig,
+			String campaignName, int thread) {
+		mainLog.info("Uruchomienie konstruktora Campaign dla kampanii=" + campaignName);
+		this.campaignName = campaignName;
 		this.campaignContent = campaignContent;
 		this.recipientsRepository = recipientsRepository;
 		this.sMTPConfig = sMTPConfig;
+		this.thread = thread;
 		try {
-			mainLog.info("Start kampanii "+campaignName);
-			startCampaign();
+			mainLog.info("Start kampanii " + campaignName);
+			// startCampaign zostal przeniesiony do metody run!
+			// startCampaign();
 		} catch (Exception e) {
 			mailErr.error("Niudana próba wys³ania do wszystkich wiadomoœci - blad w konstruktorze", e);
 			e.printStackTrace();
@@ -71,20 +74,34 @@ public class Campaign {
 	}
 
 	public void startCampaign() throws Exception {
-		mainLog.trace("Rozpoczecie metody startCampaign() dla kampanii "+this.getCampaignName());
+		mainLog.trace("Rozpoczecie metody startCampaign() dla kampanii " + this.getCampaignName());
 		Properties props = this.getsMTPConfig().getProps();
 		int i = 1;
 		try {
-			for (Recipient recipient : this.getRecipientsRepository().getRecipients()) {
-				i++;
-				createEmail(recipient, i);
-			}
+			// absolutnie nie mozna uzywac tej petli, koniecnosc stworzenia metod lock, set,
+			// check
+			// for (Recipient recipient : this.getRecipientsRepository().getRecipients()) {
+			// i++;
+			// createEmail(recipient, i);
+			// }
+
+			/**
+			 * petla wysylajaca emaile dopoki sa niewybrani odbiorcy
+			 */
+			do {
+				Recipient recipient = this.recipientsRepository.lockRecipient(thread);
+				if(recipient!=null) {
+					createEmail(recipient, thread);
+				}else {
+					mainLog.info("obiorca jest pusty! r="+recipient);
+				}
+			} while (this.recipientsRepository.checkRecipientSet(thread));
 
 		} catch (Exception e) {
 			mailErr.error("Problem z metod¹ tansport.connect ", e);
 			e.printStackTrace();
 		} finally {
-			// transport.close();
+			mainLog.info("Zakoñczono wysy³kê emaili dla w¹tku i=" + thread);
 		}
 
 	}
@@ -132,16 +149,14 @@ public class Campaign {
 			// Send the message.
 			try {
 
-				System.out.println("Sending... campaign: "+this.getCampaignName()+", to: "+recipient.getEmail());
-
-				// Connect to Amazon SES using the SMTP username and password you specified
-				// above.
+				System.out.println("Sending... campaign: " + this.getCampaignName() + ", to: " + recipient.getEmail());
 				transport.connect(host, smtpUserName, smtpPassword);
 
 				// Send the email.
 				transport.sendMessage(msg, msg.getAllRecipients());
-				mailLog.info("Email sent!, campaign: "+this.getCampaignName()+",  sender: "+this.campaignContent.getSenderEmail()+",   i = " + i + ",   email: " + recipient.getEmail());
-				
+				mailLog.info("Email sent!, campaign: " + this.getCampaignName() + ",  sender: "
+						+ this.campaignContent.getSenderEmail() + ",   i = " + i + ",   email: "
+						+ recipient.getEmail());
 
 			} catch (Exception ex) {
 				mailErr.error("The email was not sent,", ex);
@@ -153,7 +168,8 @@ public class Campaign {
 			}
 
 		} catch (Exception e) {
-			mailErr.error("Unable to create mail, campaign: "+this.getCampaignName()+", recipient: "+recipient.getEmail(), e);
+			mailErr.error("Unable to create mail, campaign: " + this.getCampaignName() + ", recipient: "
+					+ recipient.getEmail(), e);
 			System.err.println("Nie uda³o siê stworzyæ wiadomoœci");
 			e.printStackTrace();
 		}
@@ -177,6 +193,15 @@ public class Campaign {
 		personalized = personalized.replaceAll("NULL", "");
 		personalized = personalized.replaceAll("null", "");
 		return personalized;
+	}
+
+	public void run() {
+		try {
+			startCampaign();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

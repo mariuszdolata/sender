@@ -3,23 +3,35 @@ package Structure;
 public class SendClass {
 
 	public String email;
-	public boolean status;
+	/**
+	 * Statusy wykorzystywane we wspolbieznosci. 
+	 * Ready - mozna pobrac uzytkownika
+	 * Locked - blokada, aktualnie w uzyciu przez inny watek
+	 * USED - potwierdzenie wykorzystania uzytkownik
+	 * @author mariusz
+	 *
+	 */
+	
+	public RecipientStatus recipientStatus;
+	
+	
+	public RecipientStatus getRecipientStatus() {
+		return recipientStatus;
+	}
+	public void setRecipientStatus(RecipientStatus recipientStatus) {
+		this.recipientStatus = recipientStatus;
+	}
 	public String getEmail() {
 		return email;
 	}
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public boolean isStatus() {
-		return status;
-	}
-	public void setStatus(boolean status) {
-		this.status = status;
-	}
-	public SendClass(String email, boolean status) {
+	
+	public SendClass(String email, RecipientStatus recipientStatus) {
 		super();
 		this.email = email;
-		this.status = status;
+		this.recipientStatus = recipientStatus;
 	}
 	@Override
 	public int hashCode() {

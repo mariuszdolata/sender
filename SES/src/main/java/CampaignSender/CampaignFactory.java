@@ -1,8 +1,10 @@
 package CampaignSender;
 
+import org.apache.log4j.Logger;
 
 /**
- * Metoda fabrykuj¹ca dla ka¿dej z kampanii. 
+ * Metoda fabrykuj¹ca dla ka¿dej z kampanii.
+ * 
  * @author mariusz
  *
  */
@@ -25,7 +27,8 @@ public class CampaignFactory implements Runnable {
 	 */
 	public SMTPConfig sMTPConfig = null;
 	/**
-	 * Obiekt przechowujacy odbiorcow emaili. KONIECZNOSC zapewnienia synchronizacji !
+	 * Obiekt przechowujacy odbiorcow emaili. KONIECZNOSC zapewnienia synchronizacji
+	 * !
 	 */
 	public RecipientsRepository recipientsRepository = null;
 
@@ -37,12 +40,22 @@ public class CampaignFactory implements Runnable {
 	 * Obiekt odpowiedzialny za wygenerowanie wiadomosci oraz wysylke z
 	 * wykorzystaniem wskazanego serwera
 	 */
-	public Campaign campaign = null;
 
+	public CampaignSettings campaignSettings = null;
 	/**
 	 * Nadawca
 	 */
 	public String senderName, senderEmail;
+
+	public Logger testLog = Logger.getLogger("testLog");
+	
+	public CampaignSettings getCampaignSettings() {
+		return campaignSettings;
+	}
+
+	public void setCampaignSettings(CampaignSettings campaignSettings) {
+		this.campaignSettings = campaignSettings;
+	}
 
 	public String getSenderName() {
 		return senderName;
@@ -108,30 +121,8 @@ public class CampaignFactory implements Runnable {
 		this.campaignContent = campaignContent;
 	}
 
-	public Campaign getCampaign() {
-		return campaign;
-	}
-
-	public void setCampaign(Campaign campaign) {
-		this.campaign = campaign;
-	}
-
-	// public CampaignFactory(String campaigName, String smtpFilePath, String
-	// contentCode, String senderName, String senderEmail) {
-	// this.senderName=senderName;
-	// this.senderEmail=senderEmail;
-	// this.campaignName = campaigName;
-	// this.sMTPConfig=new SMTPConfig(smtpFilePath);
-	// this.contentCode=contentCode;
-	// this.recipientsRepository = new
-	// RecipientsRepository("C:\\crawlers\\amazon\\"+this.getCampaignName()+"_test_aa.csv");
-	// this.campaignContent = new
-	// CampaignContent("C:\\crawlers\\amazon\\"+this.getCampaignName(),
-	// this.getSenderName(), this.getSenderEmail());
-	//
-	//
-	// }
 	public CampaignFactory(CampaignSettings campaignSettings) {
+		this.campaignSettings = campaignSettings;
 		this.senderName = campaignSettings.getSenderName();
 		this.senderEmail = campaignSettings.getSenderEmail();
 		this.campaignName = campaignSettings.getCampaignName();
@@ -147,12 +138,23 @@ public class CampaignFactory implements Runnable {
 	}
 
 	/**
-	 * wywolanie kampanii z uzyciem danych z konstruktora.
+	 * wywolanie kampanii z uzyciem danych z konstruktora. liczba watkow jest
+	 * determinowana przez plik campaignSettings
 	 */
 	public void run() {
-		// TODO Auto-generated method stub
-		this.campaign = new Campaign(this.getCampaignContent(), this.getRecipientsRepository(), this.getsMTPConfig(),
-				this.getCampaignName());
+		testLog.info("Rozpoczecie kampanii \" "+this.getCampaignName()+" \" - tworzenie "+this.getCampaignSettings().getNumberOfThreads()+" w¹tków");
+		Campaign[] campaigns = new Campaign[this.getCampaignSettings().getNumberOfThreads()];
+		Thread[] campaignThreads = new Thread[this.getCampaignSettings().getNumberOfThreads()];
+		for (int i = 0; i < this.getCampaignSettings().getNumberOfThreads(); i++) {
+			campaigns[i] = new Campaign(this.getCampaignContent(), this.getRecipientsRepository(), this.getsMTPConfig(),
+					this.getCampaignName(), i);
+		}
+		for (int i = 0; i < this.getCampaignSettings().getNumberOfThreads(); i++) {
+			campaignThreads[i] = new Thread(campaigns[i]);
+		}
+		for (int i = 0; i < this.getCampaignSettings().getNumberOfThreads(); i++) {
+			campaignThreads[i].start();
+		}
 	}
 
 }

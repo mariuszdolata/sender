@@ -128,23 +128,23 @@ public class Recipient extends SendClass {
 		this.pkdSkrot = pkdSkrot;
 	}
 
-	public Recipient(String email, boolean status) {
-		super(email, status);
+	public Recipient(String email, RecipientStatus recipientStatus) {
+		super(email, recipientStatus);
 		this.plec="";
 	}
-	public Recipient(String email, boolean status, String plec) {
-		super(email, status);
+	public Recipient(String email, RecipientStatus recipientStatus, String plec) {
+		super(email, recipientStatus);
 		this.plec=plec;
 	}
-	public Recipient(String email, boolean status, String plec, String imieOdmiana) {
-		super(email,status);
+	public Recipient(String email, RecipientStatus recipientStatus, String plec, String imieOdmiana) {
+		super(email,recipientStatus);
 		this.plec=plec;
 		this.imieOdmiana=imieOdmiana;
 	}
-	public Recipient(String email, boolean status, String website, String formaPrawna, String nazwa, String obrot,
+	public Recipient(String email, RecipientStatus recipientStatus, String website, String formaPrawna, String nazwa, String obrot,
 			String zysk, String zatrudnienie, String poziomObrot, String poziomZysk, String poziomZatrudnienie,
 			String imieOdmiana, String plec, String stanowisko, String pkd, String pkdSkrot) {
-		super(email, status);
+		super(email, recipientStatus);
 		this.website = website;
 		this.formaPrawna = formaPrawna;
 		this.nazwa = nazwa;
@@ -161,10 +161,10 @@ public class Recipient extends SendClass {
 		this.pkdSkrot = pkdSkrot;
 	}
 
-	public Recipient(String email, boolean status, String website, String formaPrawna, String nazwa, String obrot,
+	public Recipient(String email, RecipientStatus recipientStatus, String website, String formaPrawna, String nazwa, String obrot,
 			String zysk, String zatrudnienie, String poziomObrot, String poziomZysk, String poziomZatrudnienie,
 			String imieOdmiana, String plec, String stanowisko) {
-		super(email, status);
+		super(email, recipientStatus);
 		this.website = website;
 		this.formaPrawna = formaPrawna;
 		this.nazwa = nazwa;
@@ -184,7 +184,10 @@ public class Recipient extends SendClass {
 		return "Recipient [website=" + website + ", formaPrawna=" + formaPrawna + ", nazwa=" + nazwa + ", obrot="
 				+ obrot + ", zysk=" + zysk + ", zatrudnienie=" + zatrudnienie + ", poziomObrot=" + poziomObrot
 				+ ", poziomZysk=" + poziomZysk + ", poziomZatrudnienie=" + poziomZatrudnienie + ", imieOdmiana="
-				+ imieOdmiana + ", plec=" + plec + ", stanowisko=" + stanowisko + ", email=" + email + "]";
+				+ imieOdmiana + ", plec=" + plec + ", stanowisko=" + stanowisko + ", pkd=" + pkd + ", pkdSkrot="
+				+ pkdSkrot + ", email=" + email + ", recipientStatus=" + recipientStatus + "]";
 	}
+
+	
 
 }
