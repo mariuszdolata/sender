@@ -16,134 +16,138 @@ public class Recipient extends SendClass {
 	public String pkd;
 	public String pkdSkrot;
 
-	public String getWebsite() {
+	public synchronized String getWebsite() {
 		return website;
 	}
 
-	public void setWebsite(String website) {
+	public synchronized void setWebsite(String website) {
 		this.website = website;
 	}
 
-	public String getFormaPrawna() {
+	public synchronized String getFormaPrawna() {
 		return formaPrawna;
 	}
 
-	public void setFormaPrawna(String formaPrawna) {
+	public synchronized void setFormaPrawna(String formaPrawna) {
 		this.formaPrawna = formaPrawna;
 	}
 
-	public String getNazwa() {
+	public synchronized String getNazwa() {
 		return nazwa;
 	}
 
-	public void setNazwa(String nazwa) {
+	public synchronized void setNazwa(String nazwa) {
 		this.nazwa = nazwa;
 	}
 
-	public String getObrot() {
+	public synchronized String getObrot() {
 		return obrot;
 	}
 
-	public void setObrot(String obrot) {
+	public synchronized void setObrot(String obrot) {
 		this.obrot = obrot;
 	}
 
-	public String getZysk() {
+	public synchronized String getZysk() {
 		return zysk;
 	}
 
-	public void setZysk(String zysk) {
+	public synchronized void setZysk(String zysk) {
 		this.zysk = zysk;
 	}
 
-	public String getZatrudnienie() {
+	public synchronized String getZatrudnienie() {
 		return zatrudnienie;
 	}
 
-	public void setZatrudnienie(String zatrudnienie) {
+	public synchronized void setZatrudnienie(String zatrudnienie) {
 		this.zatrudnienie = zatrudnienie;
 	}
 
-	public String getPoziomObrot() {
+	public synchronized String getPoziomObrot() {
 		return poziomObrot;
 	}
 
-	public void setPoziomObrot(String poziomObrot) {
+	public synchronized void setPoziomObrot(String poziomObrot) {
 		this.poziomObrot = poziomObrot;
 	}
 
-	public String getPoziomZysk() {
+	public synchronized String getPoziomZysk() {
 		return poziomZysk;
 	}
 
-	public void setPoziomZysk(String poziomZysk) {
+	public synchronized void setPoziomZysk(String poziomZysk) {
 		this.poziomZysk = poziomZysk;
 	}
 
-	public String getPoziomZatrudnienie() {
+	public synchronized String getPoziomZatrudnienie() {
 		return poziomZatrudnienie;
 	}
 
-	public void setPoziomZatrudnienie(String poziomZatrudnienie) {
+	public synchronized void setPoziomZatrudnienie(String poziomZatrudnienie) {
 		this.poziomZatrudnienie = poziomZatrudnienie;
 	}
 
-	public String getImieOdmiana() {
+	public synchronized String getImieOdmiana() {
 		return imieOdmiana;
 	}
 
-	public void setImieOdmiana(String imieOdmiana) {
+	public synchronized void setImieOdmiana(String imieOdmiana) {
 		this.imieOdmiana = imieOdmiana;
 	}
 
-	public String getPlec() {
+	public synchronized String getPlec() {
 		return plec;
 	}
 
-	public void setPlec(String plec) {
+	public synchronized void setPlec(String plec) {
 		this.plec = plec;
 	}
 
-	public String getStanowisko() {
+	public synchronized String getStanowisko() {
 		return stanowisko;
 	}
 
-	public void setStanowisko(String stanowisko) {
+	public synchronized void setStanowisko(String stanowisko) {
 		this.stanowisko = stanowisko;
 	}
 
-	public String getPkd() {
+	public synchronized String getPkd() {
 		return pkd;
 	}
 
-	public void setPkd(String pkd) {
+	public synchronized void setPkd(String pkd) {
 		this.pkd = pkd;
 	}
 
-	public String getPkdSkrot() {
+	public synchronized String getPkdSkrot() {
 		return pkdSkrot;
 	}
 
-	public void setPkdSkrot(String pkdSkrot) {
+	public synchronized void setPkdSkrot(String pkdSkrot) {
 		this.pkdSkrot = pkdSkrot;
 	}
 
 	public Recipient(String email, RecipientStatus recipientStatus) {
 		super(email, recipientStatus);
-		this.plec="";
+		this.plec = "";
 	}
+
 	public Recipient(String email, RecipientStatus recipientStatus, String plec) {
 		super(email, recipientStatus);
-		this.plec=plec;
+		this.plec = plec;
 	}
+
 	public Recipient(String email, RecipientStatus recipientStatus, String plec, String imieOdmiana) {
-		super(email,recipientStatus);
-		this.plec=plec;
-		this.imieOdmiana=imieOdmiana;
+		super(email, recipientStatus);
+		this.plec = plec;
+		this.imieOdmiana = imieOdmiana;
 	}
-	public Recipient(String email, RecipientStatus recipientStatus, String website, String formaPrawna, String nazwa, String obrot,
-			String zysk, String zatrudnienie, String poziomObrot, String poziomZysk, String poziomZatrudnienie,
-			String imieOdmiana, String plec, String stanowisko, String pkd, String pkdSkrot) {
+
+	public Recipient(String email, RecipientStatus recipientStatus, String website, String formaPrawna, String nazwa,
+			String obrot, String zysk, String zatrudnienie, String poziomObrot, String poziomZysk,
+			String poziomZatrudnienie, String imieOdmiana, String plec, String stanowisko, String pkd,
+			String pkdSkrot) {
 		super(email, recipientStatus);
 		this.website = website;
 		this.formaPrawna = formaPrawna;
@@ -161,9 +165,9 @@ public class Recipient extends SendClass {
 		this.pkdSkrot = pkdSkrot;
 	}
 
-	public Recipient(String email, RecipientStatus recipientStatus, String website, String formaPrawna, String nazwa, String obrot,
-			String zysk, String zatrudnienie, String poziomObrot, String poziomZysk, String poziomZatrudnienie,
-			String imieOdmiana, String plec, String stanowisko) {
+	public Recipient(String email, RecipientStatus recipientStatus, String website, String formaPrawna, String nazwa,
+			String obrot, String zysk, String zatrudnienie, String poziomObrot, String poziomZysk,
+			String poziomZatrudnienie, String imieOdmiana, String plec, String stanowisko) {
 		super(email, recipientStatus);
 		this.website = website;
 		this.formaPrawna = formaPrawna;
@@ -180,14 +184,12 @@ public class Recipient extends SendClass {
 	}
 
 	@Override
-	public String toString() {
+	public synchronized String toString() {
 		return "Recipient [website=" + website + ", formaPrawna=" + formaPrawna + ", nazwa=" + nazwa + ", obrot="
 				+ obrot + ", zysk=" + zysk + ", zatrudnienie=" + zatrudnienie + ", poziomObrot=" + poziomObrot
 				+ ", poziomZysk=" + poziomZysk + ", poziomZatrudnienie=" + poziomZatrudnienie + ", imieOdmiana="
 				+ imieOdmiana + ", plec=" + plec + ", stanowisko=" + stanowisko + ", pkd=" + pkd + ", pkdSkrot="
 				+ pkdSkrot + ", email=" + email + ", recipientStatus=" + recipientStatus + "]";
 	}
-
-	
 
 }

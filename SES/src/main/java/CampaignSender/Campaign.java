@@ -1,6 +1,6 @@
 package CampaignSender;
 
-import java.util.Map.Entry;
+import java.util.Date;
 import java.util.Properties;
 
 import javax.mail.Message;
@@ -78,13 +78,6 @@ public class Campaign implements Runnable {
 		Properties props = this.getsMTPConfig().getProps();
 		int i = 1;
 		try {
-			// absolutnie nie mozna uzywac tej petli, koniecnosc stworzenia metod lock, set,
-			// check
-			// for (Recipient recipient : this.getRecipientsRepository().getRecipients()) {
-			// i++;
-			// createEmail(recipient, i);
-			// }
-
 			/**
 			 * petla wysylajaca emaile dopoki sa niewybrani odbiorcy
 			 */
@@ -95,7 +88,7 @@ public class Campaign implements Runnable {
 				}else {
 					mainLog.info("obiorca jest pusty! r="+recipient);
 				}
-			} while (this.recipientsRepository.checkRecipientSet(thread));
+			} while (!this.recipientsRepository.checkRecipientSet(thread));
 
 		} catch (Exception e) {
 			mailErr.error("Problem z metod¹ tansport.connect ", e);
@@ -139,6 +132,7 @@ public class Campaign implements Runnable {
 			msg = new MimeMessage(session);
 			msg.setFrom(new InternetAddress(senderEmail, senderName));
 			msg.setHeader("Content-Type", "text/plain; charset=UTF-8");
+			msg.setSentDate(new Date());
 			msg.setRecipient(Message.RecipientType.TO, new InternetAddress(recipientEmail));
 			String subject = personalizeText(this.getCampaignContent().getSubject(), recipient);
 			msg.setSubject(subject, "utf-8");

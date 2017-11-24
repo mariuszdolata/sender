@@ -28,19 +28,19 @@ public class RecipientsRepository {
 	public Logger testLog = Logger.getLogger("testLog");
 	public Logger testLogCollision = Logger.getLogger("testLogCollision");
 
-	public Set<Recipient> getRecipients() {
+	public synchronized Set<Recipient> getRecipients() {
 		return recipients;
 	}
 
-	public void setRecipients(Set<Recipient> recipients) {
+	public synchronized void setRecipients(Set<Recipient> recipients) {
 		this.recipients = recipients;
 	}
 
-	public String getFilePath() {
+	public synchronized String getFilePath() {
 		return filePath;
 	}
 
-	public void setFilePath(String filePath) {
+	public synchronized void setFilePath(String filePath) {
 		this.filePath = filePath;
 	}
 
@@ -91,7 +91,12 @@ public class RecipientsRepository {
 	public static Recipient mapperSellter(String line) {
 		Recipient sellter = null;
 		String[] fields = line.split(";");
-		fields[0] = fields[0].replaceAll("\\s", "");
+		//char c = '?';
+		//fields[0]=fields[0].replaceAll(String.valueOf(c), "");
+//		byte[] bytes = fields[0].getBytes();
+//		for(byte b:bytes) {
+//			System.out.println(fields[0]+"==>"+b);
+//		}
 		System.out.println("liczba elementow odbiorcy (13 lub 15), a jest " + fields.length);
 		try {
 			// sellter = new Recipient(fields[0], false, fields[3], fields[2], fields[1],
@@ -131,7 +136,7 @@ public class RecipientsRepository {
 		return sellter;
 	}
 
-	public void showRecipients() {
+	public synchronized void showRecipients() {
 		System.out.println("Loaded recipients:");
 		for (Recipient s : this.recipients) {
 			System.out.println(s.toString());
@@ -147,14 +152,15 @@ public class RecipientsRepository {
 	public synchronized Recipient lockRecipient(int thread) {
 		Recipient recipient = null;
 		for (Iterator<Recipient> it = this.recipients.iterator(); it.hasNext();) {
-			recipient = it.next();
+			Recipient returnedRecipient = it.next();
 			//testLog.info("i = "+thread+", iteracja recipient " + r.toString());
-			if (recipient.getRecipientStatus() == RecipientStatus.READY) {
-				testLog.info("i = "+thread+", znalezono nieu¿ytego odbiorcê " + recipient.toString());
-				this.recipients.remove(recipient);
-				recipient.setRecipientStatus(RecipientStatus.LOCKED);
-				this.recipients.add(recipient);
-				testLog.info("i = "+thread+", u¿yto odbiorcê " + recipient.toString());
+			if (returnedRecipient.getRecipientStatus() == RecipientStatus.READY) {
+				testLog.info("i = "+thread+", znalezono nieu¿ytego odbiorcê " + returnedRecipient.toString());
+				this.recipients.remove(returnedRecipient);
+				returnedRecipient.setRecipientStatus(RecipientStatus.LOCKED);
+				this.recipients.add(returnedRecipient);
+				testLog.info("i = "+thread+", u¿yto odbiorcê " + returnedRecipient.toString());
+				recipient = returnedRecipient;
 				break;
 			}
 		}
