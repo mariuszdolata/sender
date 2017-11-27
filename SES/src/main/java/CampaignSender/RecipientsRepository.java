@@ -166,6 +166,23 @@ public class RecipientsRepository {
 		}
 		return recipient;
 	}
+	/**
+	 * metoda pobierajaca odbiorce bez blokowania (tylko do testowania)
+	 * @param thread
+	 * @return
+	 */
+	public synchronized Recipient getRecipient(int thread) {
+		Recipient recipient = null;
+		for (Iterator<Recipient> it = this.recipients.iterator(); it.hasNext();) {
+			Recipient returnedRecipient = it.next();
+			//testLog.info("i = "+thread+", iteracja recipient " + r.toString());
+			if (returnedRecipient.getRecipientStatus() == RecipientStatus.READY) {
+				recipient = returnedRecipient;
+				break;
+			}
+		}
+		return recipient;
+	}
 
 	/**
 	 * metoda zamieniajaca status odbiorcy z LOCKED na USED

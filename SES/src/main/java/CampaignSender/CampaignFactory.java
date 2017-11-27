@@ -161,7 +161,7 @@ public class CampaignFactory implements Runnable {
 		Thread[] campaignThreads = new Thread[this.getCampaignSettings().getNumberOfThreads()];
 		for (int i = 0; i < this.getCampaignSettings().getNumberOfThreads(); i++) {
 			campaigns[i] = new Campaign(this.getCampaignContent(), this.getRecipientsRepository(), this.getTestersRepository(), this.getsMTPConfig(),
-					this.getCampaignName(), i);
+					this.getCampaignName(), i, this.campaignSettings);
 		}
 		for (int i = 0; i < this.getCampaignSettings().getNumberOfThreads(); i++) {
 			campaignThreads[i] = new Thread(campaigns[i]);

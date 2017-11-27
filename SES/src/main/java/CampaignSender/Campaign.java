@@ -2,6 +2,7 @@ package CampaignSender;
 
 import java.util.Date;
 import java.util.Properties;
+import java.util.Random;
 
 import javax.mail.Message;
 import javax.mail.Session;
@@ -17,12 +18,31 @@ public class Campaign implements Runnable {
 	public CampaignContent campaignContent;
 	public RecipientsRepository recipientsRepository = null;
 	public RecipientsRepository testersRepository = null;
+	public CampaignSettings campaignSettings = null;
+	public int testRate;
 	public SMTPConfig sMTPConfig;
 	public Logger mailLog = Logger.getLogger("mailLog");
 	public Logger mailErr = Logger.getLogger("mailErr");
 	public Logger mainLog = Logger.getLogger("mainLog");
 	public String campaignName;
 	public int thread;
+
+	
+	public CampaignSettings getCampaignSettings() {
+		return campaignSettings;
+	}
+
+	public void setCampaignSettings(CampaignSettings campaignSettings) {
+		this.campaignSettings = campaignSettings;
+	}
+
+	public int getTestRate() {
+		return testRate;
+	}
+
+	public void setTestRate(int testRate) {
+		this.testRate = testRate;
+	}
 
 	public String getCampaignName() {
 		return campaignName;
@@ -65,7 +85,7 @@ public class Campaign implements Runnable {
 	}
 
 	public Campaign(CampaignContent campaignContent, RecipientsRepository recipientsRepository, RecipientsRepository testersRepository, SMTPConfig sMTPConfig,
-			String campaignName, int thread) {
+			String campaignName, int thread, CampaignSettings campaignSettings) {
 		mainLog.info("Uruchomienie konstruktora Campaign dla kampanii=" + campaignName);
 		this.campaignName = campaignName;
 		this.campaignContent = campaignContent;
@@ -73,6 +93,8 @@ public class Campaign implements Runnable {
 		this.testersRepository = testersRepository;
 		this.sMTPConfig = sMTPConfig;
 		this.thread = thread;
+		this.campaignSettings = campaignSettings;
+		this.testRate = this.campaignSettings.getTestRate();
 		try {
 			mainLog.info("Start kampanii " + campaignName);
 			// startCampaign zostal przeniesiony do metody run!
@@ -90,9 +112,20 @@ public class Campaign implements Runnable {
 		try {
 			/**
 			 * petla wysylajaca emaile dopoki sa niewybrani odbiorcy
+			 * jedna iteracja to losowanie czy wysylka testowa czy wlasciwa
 			 */
 			do {
-				Recipient recipient = this.recipientsRepository.lockRecipient(thread);
+				//losowanie czy odbiorca czy tester
+				int rand = new Random().nextInt(100);
+				Recipient recipient = null;
+				if(rand <=this.getTestRate()) {
+					//wysylka testowa
+					recipient = this.testersRepository.getRecipient(thread);
+					mainLog.info("wysy³ka testowa na adres "+recipient.getEmail());
+				}else {
+					//wysylka wlasciwa
+					recipient = this.recipientsRepository.lockRecipient(thread);
+				}
 				if(recipient!=null) {
 					createEmail(recipient, thread);
 				}else {

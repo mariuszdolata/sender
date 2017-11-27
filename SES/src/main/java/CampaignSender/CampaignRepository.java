@@ -98,7 +98,7 @@ public class CampaignRepository {
 				System.out.println(readLine);
 				String[] parts = readLine.split(";");
 				System.out.println("liczba emementow to " + parts.length);
-				if (parts.length == 8) {
+				if (parts.length == 9) {
 					// wykrywa kampanie aktywne
 					if (parts[5].contains("yes")) {
 						this.getCampaignsSet().add(new CampaignSettings(parts[0], parts[1], parts[2], parts[3],
