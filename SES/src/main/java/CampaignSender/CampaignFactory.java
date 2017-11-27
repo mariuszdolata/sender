@@ -31,6 +31,11 @@ public class CampaignFactory implements Runnable {
 	 * !
 	 */
 	public RecipientsRepository recipientsRepository = null;
+	
+	/**
+	 * Adresy testowe dla wysylek oraz zbijajace twarde odbicia
+	 */
+	public RecipientsRepository testersRepository = null;
 
 	/**
 	 * Obiekt przechowujacy aktualna tresc zaczepki
@@ -120,8 +125,16 @@ public class CampaignFactory implements Runnable {
 	public void setCampaignContent(CampaignContent campaignContent) {
 		this.campaignContent = campaignContent;
 	}
+	
+	public RecipientsRepository getTestersRepository() {
+		return testersRepository;
+	}
 
-	public CampaignFactory(CampaignSettings campaignSettings) {
+	public void setTestersRepository(RecipientsRepository testersRepository) {
+		this.testersRepository = testersRepository;
+	}
+
+	public CampaignFactory(CampaignSettings campaignSettings, RecipientsRepository testersRepository) {
 		this.campaignSettings = campaignSettings;
 		this.senderName = campaignSettings.getSenderName();
 		this.senderEmail = campaignSettings.getSenderEmail();
@@ -135,6 +148,7 @@ public class CampaignFactory implements Runnable {
 				"C:\\crawlers\\amazon\\zaczepki\\" + this.getCampaignName() + "\\" + campaignSettings.getContentCode()
 						+ "\\" + this.getCampaignName(),
 				this.getSenderName(), this.getSenderEmail(), campaignSettings.getSubject());
+		this.testersRepository = testersRepository;
 	}
 
 	/**
@@ -146,7 +160,7 @@ public class CampaignFactory implements Runnable {
 		Campaign[] campaigns = new Campaign[this.getCampaignSettings().getNumberOfThreads()];
 		Thread[] campaignThreads = new Thread[this.getCampaignSettings().getNumberOfThreads()];
 		for (int i = 0; i < this.getCampaignSettings().getNumberOfThreads(); i++) {
-			campaigns[i] = new Campaign(this.getCampaignContent(), this.getRecipientsRepository(), this.getsMTPConfig(),
+			campaigns[i] = new Campaign(this.getCampaignContent(), this.getRecipientsRepository(), this.getTestersRepository(), this.getsMTPConfig(),
 					this.getCampaignName(), i);
 		}
 		for (int i = 0; i < this.getCampaignSettings().getNumberOfThreads(); i++) {

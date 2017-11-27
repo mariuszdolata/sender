@@ -65,13 +65,13 @@ public class RecipientsRepository {
 			System.out.println("Start loading recipients.");
 
 			while ((readLine = b.readLine()) != null) {
-				System.out.println("new recipients:  " + readLine);
+				//System.out.println("new recipients:  " + readLine);
 				Recipient nextSellter = mapperSellter(readLine);
 				if (nextSellter != null) {
 					recipients.add(nextSellter);
-					System.out.println("Recipient added: " + nextSellter.toString());
+					//System.out.println("Recipient added: " + nextSellter.toString());
 				} else {
-					System.out.println("Recipient was skipped" + readLine);
+					//System.out.println("Recipient was skipped" + readLine);
 				}
 			}
 		} catch (IOException e) {
@@ -97,7 +97,7 @@ public class RecipientsRepository {
 //		for(byte b:bytes) {
 //			System.out.println(fields[0]+"==>"+b);
 //		}
-		System.out.println("liczba elementow odbiorcy (13 lub 15), a jest " + fields.length);
+		//System.out.println("liczba elementow odbiorcy (13 lub 15), a jest " + fields.length);
 		try {
 			// sellter = new Recipient(fields[0], false, fields[3], fields[2], fields[1],
 			// fields[4]);
@@ -106,13 +106,13 @@ public class RecipientsRepository {
 				sellter = new Recipient(fields[0], Structure.RecipientStatus.READY, fields[1], fields[2], fields[3],
 						fields[4], fields[5], fields[6], fields[7], fields[8], fields[9], fields[10], fields[11],
 						fields[12], fields[13], fields[14]);
-				System.out.println(">>>>>>>15>>>>>>>" + sellter.toString());
+			//	System.out.println(">>>>>>>15>>>>>>>" + sellter.toString());
 			} else if (fields.length == 13) {
 				// dane pochodza ze starego generatora
 				sellter = new Recipient(fields[0], Structure.RecipientStatus.READY, fields[1], fields[2], fields[3],
 						fields[4], fields[5], fields[6], fields[7], fields[8], fields[9], fields[10], fields[11],
 						fields[12]);
-				System.out.println(">>>>13>>>>>>>>>>" + sellter.toString());
+		//		System.out.println(">>>>13>>>>>>>>>>" + sellter.toString());
 			} else if (fields.length == 1) {
 				sellter = new Recipient(fields[0], Structure.RecipientStatus.READY);
 			} else if (fields.length == 2) {
@@ -122,13 +122,13 @@ public class RecipientsRepository {
 			}
 
 		} catch (Exception e) {
-			System.err.println("Sellter mapping error - out of bound? domain missing?");
+		//	System.err.println("Sellter mapping error - out of bound? domain missing?");
 			e.printStackTrace();
 			try {
 				// sellter = new Recipient(fields[0], false, fields[3], fields[2], fields[1],
 				// "");
 			} catch (Exception ee) {
-				System.err.println("Sellter mapping error lvl2 - this recipient was skipped");
+		//		System.err.println("Sellter mapping error lvl2 - this recipient was skipped");
 				ee.printStackTrace();
 			}
 

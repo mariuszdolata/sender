@@ -8,8 +8,15 @@ public class CampaignSettings {
 	public String senderEmail;
 	public String subject;
 	public int numberOfThreads;
+	public int testRate;
 	
 	
+	public int getTestRate() {
+		return testRate;
+	}
+	public void setTestRate(int testRate) {
+		this.testRate = testRate;
+	}
 	public String getSubject() {
 		return subject;
 	}
@@ -53,7 +60,7 @@ public class CampaignSettings {
 		this.senderEmail = senderEmail;
 	}
 	public CampaignSettings(String campaignName, String smtpFilePath, String contentCode, String senderName,
-			String senderEmail, String numberOfThreads, String subject) {
+			String senderEmail, String numberOfThreads, String subject, int testRate) {
 		super();
 		this.campaignName = campaignName;
 		this.smtpFilePath = smtpFilePath;
@@ -62,6 +69,7 @@ public class CampaignSettings {
 		this.senderEmail = senderEmail;
 		this.numberOfThreads = Integer.parseInt(numberOfThreads);
 		this.subject = subject;
+		this.testRate = testRate;
 		
 	}
 	@Override

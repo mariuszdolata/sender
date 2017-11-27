@@ -15,7 +15,8 @@ import Structure.Recipient;
 
 public class Campaign implements Runnable {
 	public CampaignContent campaignContent;
-	public RecipientsRepository recipientsRepository;
+	public RecipientsRepository recipientsRepository = null;
+	public RecipientsRepository testersRepository = null;
 	public SMTPConfig sMTPConfig;
 	public Logger mailLog = Logger.getLogger("mailLog");
 	public Logger mailErr = Logger.getLogger("mailErr");
@@ -39,6 +40,14 @@ public class Campaign implements Runnable {
 		this.campaignContent = campaignContent;
 	}
 
+	public RecipientsRepository getTestersRepository() {
+		return testersRepository;
+	}
+
+	public void setTestersRepository(RecipientsRepository testersRepository) {
+		this.testersRepository = testersRepository;
+	}
+
 	public RecipientsRepository getRecipientsRepository() {
 		return recipientsRepository;
 	}
@@ -55,12 +64,13 @@ public class Campaign implements Runnable {
 		this.sMTPConfig = sMTPConfig;
 	}
 
-	public Campaign(CampaignContent campaignContent, RecipientsRepository recipientsRepository, SMTPConfig sMTPConfig,
+	public Campaign(CampaignContent campaignContent, RecipientsRepository recipientsRepository, RecipientsRepository testersRepository, SMTPConfig sMTPConfig,
 			String campaignName, int thread) {
 		mainLog.info("Uruchomienie konstruktora Campaign dla kampanii=" + campaignName);
 		this.campaignName = campaignName;
 		this.campaignContent = campaignContent;
 		this.recipientsRepository = recipientsRepository;
+		this.testersRepository = testersRepository;
 		this.sMTPConfig = sMTPConfig;
 		this.thread = thread;
 		try {

@@ -24,7 +24,22 @@ public class CampaignRepository {
 	 */
 	public Set<CampaignSettings> campaignsSet = new HashSet<CampaignSettings>();
 	public List<?> campaignList;
+	
+	/**
+	 * Obiekt przechowujacy testowych odbiorcow zaczepek
+	 */
+	public RecipientsRepository testersRepository = null;
 	public Logger testLog = Logger.getLogger("testLog");
+
+	
+	
+	public RecipientsRepository getTestersRepository() {
+		return testersRepository;
+	}
+
+	public void setTestersRepository(RecipientsRepository testersRepository) {
+		this.testersRepository = testersRepository;
+	}
 
 	public int getNumberOfCampaign() {
 		return numberOfCampaign;
@@ -87,7 +102,7 @@ public class CampaignRepository {
 					// wykrywa kampanie aktywne
 					if (parts[5].contains("yes")) {
 						this.getCampaignsSet().add(new CampaignSettings(parts[0], parts[1], parts[2], parts[3],
-								parts[4], parts[6], parts[7]));
+								parts[4], parts[6], parts[7], Integer.parseInt(parts[8])));
 						System.out.println("new campign:  " + readLine);
 					} else if (parts[5].contains("no")) {
 						System.out.println("Skipped campaign: " + parts[1]);
@@ -109,11 +124,12 @@ public class CampaignRepository {
 	 * Metoda tworz¹ca osobne w¹tki dla ka¿dej z kampanii
 	 */
 	public void createCampaignFactory(List<?> campaignList) {
+		this.testersRepository = new RecipientsRepository("C:\\crawlers\\amazon\\odbiorcy\\testers.csv");
 		testLog.info("ZNALEZIONO "+campaignList.size()+" KAMPANII");
 		CampaignFactory[] campaignFactory = new CampaignFactory[campaignList.size()];
 		Thread[] threads = new Thread[campaignList.size()];
 		for (int i = 0; i < campaignList.size(); i++) {
-			campaignFactory[i] = new CampaignFactory((CampaignSettings) campaignList.get(i));
+			campaignFactory[i] = new CampaignFactory((CampaignSettings) campaignList.get(i), this.getTestersRepository());
 		}
 		for (int i = 0; i < campaignList.size(); i++) {
 			threads[i] = new Thread(campaignFactory[i]);
